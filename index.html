@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Тема</title>
+<style>
+  body { margin: 0; font-family: sans-serif; background: #fff; }
+  header { padding: 12px 16px; font-size: 18px; font-weight: bold; }
+  iframe { width: 100%; height: calc(100vh - 54px); border: none; }
+</style>
+</head>
+<body>
+<header id="title">Загрузка…</header>
+<iframe id="pdf" src=""></iframe>
+<script>
+  const params = new URLSearchParams(location.search);
+  const key = (params.get("topic") || "0_0").split("_").map(Number);
+  const mod = key[0] + 1, topic = key[1] + 1;
+  document.getElementById("title").textContent = "Материал модуля " + mod + ", тема " + topic;
+  document.getElementById("pdf").src = "files/m" + mod + "_t" + topic + ".pdf";
+</script>
+</body>
+</html>
