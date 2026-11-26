@@ -34,7 +34,7 @@
     document.getElementById("title").textContent =
       `Модуль ${modIdx + 1}, Тема ${topicIdx + 1}`;
 
-    fetch(`pages/m${modIdx + 1}_t${topicIdx + 1}.html`)
+    fetch(`m${modIdx + 1}_t${topicIdx + 1}.html`)
       .then(resp => {
         if (!resp.ok) throw new Error("Файл темы не найден");
         return resp.text();
