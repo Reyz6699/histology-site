@@ -1,24 +1,52 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Тема</title>
-<style>
-  body { margin: 0; font-family: sans-serif; background: #fff; }
-  header { padding: 12px 16px; font-size: 18px; font-weight: bold; }
-  iframe { width: 100%; height: calc(100vh - 54px); border: none; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Гистология: Чтение</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <style>
+    body { margin: 0; font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: #f4f4f4; }
+    header { background: #ffffff; padding: 10px 15px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); display: flex; align-items: center; gap: 10px; position: sticky; top: 0; }
+    h1 { margin: 0; font-size: 18px; color: #333; }
+    .loader { text-align: center; padding: 20px; color: #666; }
+    #content { background: #fff; max-width: 800px; margin: 0 auto; padding: 16px; min-height: calc(100vh - 60px); }
+    #content h2 { color: #2b2d42; }
+    #content img { max-width: 100%; height: auto; }
+  </style>
 </head>
 <body>
-<header id="title">Загрузка…</header>
-<iframe id="pdf" src=""></iframe>
-<script>
-  const params = new URLSearchParams(location.search);
-  const key = (params.get("topic") || "0_0").split("_").map(Number);
-  const mod = key[0] + 1, topic = key[1] + 1;
-  document.getElementById("title").textContent = "Материал модуля " + mod + ", тема " + topic;
-  document.getElementById("pdf").src = "files/m" + mod + "_t" + topic + ".pdf";
-</script>
+  <header>
+    <button style="background:none; border:none; font-size:20px; cursor:pointer; padding:0;" onclick="window.Telegram.WebApp.close()">←</button>
+    <h1 id="title">Загрузка...</h1>
+  </header>
+  <div id="loader" class="loader">Загрузка материала...</div>
+  <div id="content"></div>
+
+  <script>
+    const tg = window.Telegram.WebApp;
+    tg.ready();
+
+    const params = new URLSearchParams(window.location.search);
+    const topicKey = params.get("topic") || "0_0";
+    const [modIdx, topicIdx] = topicKey.split("_").map(Number);
+
+    document.getElementById("title").textContent =
+      `Модуль ${modIdx + 1}, Тема ${topicIdx + 1}`;
+
+    fetch(`pages/m${modIdx + 1}_t${topicIdx + 1}.html`)
+      .then(resp => {
+        if (!resp.ok) throw new Error("Файл темы не найден");
+        return resp.text();
+      })
+      .then(html => {
+        document.getElementById("content").innerHTML = html;
+        document.getElementById("loader").style.display = "none";
+      })
+      .catch(() => {
+        document.getElementById("loader").textContent =
+          "⚠️ Материал этой темы пока не загружен.";
+      });
+  </script>
 </body>
 </html>
